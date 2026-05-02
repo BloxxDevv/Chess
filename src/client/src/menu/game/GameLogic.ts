@@ -33,6 +33,11 @@ export let playerColor: string;
 
 let running = false;
 
+let ccell1: HTMLDivElement;
+let ccell2: HTMLDivElement;
+
+let kingCell: HTMLDivElement;
+
 export function reset(send: boolean){
     currentPiece = undefined;
     currentCloneImg = undefined;
@@ -389,6 +394,10 @@ function moveIsCastle(piece: Piece, cell: string): boolean{
 }
 
 export function castle(type: string, initCell: string){
+    if (kingCell != null){
+        kingCell.style = '';
+    }
+
     const col = initCell.charAt(1) == '1' ? "white" : "black"
 
     document.getElementById(initCell).innerHTML = '';
@@ -411,6 +420,9 @@ export function castle(type: string, initCell: string){
     }
 
     plieCounter = 0;
+
+    drawPreviousMove(initCell, type === "short" ? "G" + initCell.charAt(1) : "C" + initCell.charAt(1));
+    drawCheckSquare(col === "white" ? "black " : "white");
 }
 
 export function getPieceChar(piece: Piece, color: string): string{
@@ -760,6 +772,9 @@ export async function movePiece(initCell: string, cell: string, color: string, p
             boardMap.set(cell, getPieceChar(piece, color))
 
             if (!isCheck(color, boardMap) || !send){
+                if (kingCell != null){
+                    kingCell.style = '';
+                }
                 
                 if (!send){
                     if (piece.type === "KING") otherKingMoved = true;
@@ -810,6 +825,10 @@ export async function movePiece(initCell: string, cell: string, color: string, p
                     kingMoved = true;
                 }
 
+                drawPreviousMove(initCell, cell);
+
+                drawCheckSquare(color === "white" ? "black " : "white");
+
                 if (send){
                     let newPiece: Piece | undefined;
                     if (piece.type === "PAWN" && (cell.charAt(1) == '1' || cell.charAt(1) == '8')){
@@ -847,6 +866,36 @@ export async function movePiece(initCell: string, cell: string, color: string, p
     }else{
         setPiece(piece, initCell, color);
     }
+}
+
+function drawCheckSquare(color: string){
+    if (isCheck(color, boardMap)){
+        const kingSquare = findKingSquare(color, boardMap);
+
+        const kingDiv = document.getElementById(kingSquare);
+        kingDiv.style.backgroundColor = '#960000';
+
+        kingCell = kingDiv;
+    }
+}
+
+function drawPreviousMove(initCell: string, cell: string) {
+    const initDiv = document.getElementById(initCell);
+    const cellDiv = document.getElementById(cell);
+
+    if (ccell1 != null){
+        ccell1.style = '';
+    }
+                
+    if (ccell2 != null){
+        ccell2.style = '';
+    }
+
+    initDiv.style.backgroundColor = '#efff62';
+    cellDiv.style.backgroundColor = '#efff62';
+
+    ccell1 = initDiv;
+    ccell2 = cellDiv;
 }
 
 function contains(array: string[], str: string): boolean{
