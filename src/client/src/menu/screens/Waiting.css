@@ -1,0 +1,17 @@
+body{
+    margin: 0;
+}
+
+.waiting#root{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.waiting #pCountLbl {
+    color: #b3ffc6;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    text-align: center;
+}

@@ -1,0 +1,85 @@
+.titleDiv {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  padding-top: 1%;
+}
+
+.titleContainer {
+  border: #b3ffc6 5px solid;
+
+  border-radius: 20px;
+}
+
+.mainTitle {
+  font-size: 60px;
+  font-family: Arial;
+  color: #b3ffc6;
+  margin: 30px;
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.defaultInput {
+  background-color: transparent;
+  text-align: center;
+
+    margin-top: 2%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 25px;
+  font-family: Arial;
+  font-weight: bold;
+  width: 250px;
+  border: #b3ffc6 3px solid;
+  border-radius: 10px;
+  color: #b3ffc6;
+}
+
+.defaultBtn {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+
+  background-color: transparent; 
+  transition: background-color 0.5s ease;
+
+    margin-top: 2%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 25px;
+  font-family: Arial;
+  font-weight: bold;
+  width: 250px;
+  border: #b3ffc6 3px solid;
+  border-radius: 10px;
+  color: #b3ffc6;
+}
+
+.defaultBtn > p{
+  margin-top: 0;
+  margin-bottom: 0;
+  
+  color: #b3ffc6;
+
+  font-size: 25px;
+  font-family: Arial;
+  font-weight: bold;
+
+    transition: color 0.5s ease;
+}
+
+.defaultBtn:hover {
+  background-color: #b3ffc6;
+}
+
+.defaultBtn:hover > p {
+  color: #272833;
+}

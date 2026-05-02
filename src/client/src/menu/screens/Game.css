@@ -1,0 +1,334 @@
+html, body, #root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    transition: background-color 0.5s ease;
+}
+
+#boardBorder {
+    height: 80%;
+    aspect-ratio: 1/1;
+    background-color: rgb(49, 26, 14);
+    padding: 0;
+
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#board {
+    width: 90%;
+    height: 90%;
+    padding: 0;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.WCell {
+    background-color: rgb(253, 232, 135);
+    width: 12.5%;
+    height: 12.5%;
+
+    position: relative;
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.BCell {
+    background-color: rgb(92, 68, 41);
+    width: 12.5%;
+    height: 12.5%;
+
+    position: relative;
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+#HT {
+    width: 90%;
+    height: 5%;
+
+    margin-left: 5%;
+
+    display: flex;
+}
+
+#HB {
+    position: absolute;
+    width: 90%;
+    height: 5%;
+
+    margin-left: 5%;
+
+    display: flex;
+    bottom: 0;
+}
+
+#VL {
+    height: 90%;
+    width: 5%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#VR {
+    position: absolute;
+    height: 90%;
+    width: 5%;
+
+    display: flex;
+    flex-direction: column;
+    right: 0;
+    top: 5%;
+}
+
+.HCellDesc {
+    width: 12.5%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cellLabel {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    user-select: none;
+}
+
+.VCellDesc {
+    height: 12.5%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pieceImgWhite {
+    width: 90%;
+    height: 90%;
+    
+    position: absolute;
+    cursor: grab;
+}
+
+.pieceImgBlack {
+    width: 90%;
+    height: 90%;
+    filter: brightness(0.3);
+
+    position: absolute;
+    cursor: grab;
+}
+
+.cloneImgWhite {
+    position: absolute;
+    cursor: grabbing;
+
+    top: 0;
+}
+
+.cloneImgBlack {
+    filter: brightness(0.3);
+
+    position: absolute;
+    cursor: grabbing;
+
+    top: 0;
+}
+
+.unselectable {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+#promotion-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #272833;
+    padding: 20px;
+    border: #b3ffc6 5px solid;
+    border-radius: 8px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+}
+
+#promotion-menu > h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: white;
+}
+
+.promo-options button {
+    margin: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.promo-options > img {
+    width: 10ch;
+}
+
+.promo-options > img:hover {
+    filter: brightness(0.7) sepia(1) hue-rotate(90deg);
+}
+
+#end-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #272833;
+    padding: 40px;
+    border: #b3ffc6 5px solid;
+    border-radius: 10px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+    width: 15%;
+}
+
+#end-screen > h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: white;
+}
+
+#end-screen > p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: white;
+}
+
+#confirm-dialogue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #272833;
+    padding: 40px;
+    border: #b3ffc6 5px solid;
+    border-radius: 10px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+}
+
+#confirm-dialogue > p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 25px;
+    color: white;
+}
+
+#buttons {
+    display: flex;
+    gap: 50px;
+    width: 100%;
+    justify-content: center;
+}
+
+.confirmButton {
+    width: 40%;
+    text-align: center;
+    background-color: #b3ffc6;
+    border-radius: 10px;
+    cursor: pointer;
+
+    transition: background-color ease 0.6s;
+}
+
+.confirmButton:hover {
+    background-color: #fff;
+}
+
+.confirmButton > p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#buttonPanel {
+    background-color: rgb(99, 99, 99);
+    height: 80%;
+    aspect-ratio: 25/80;
+    border-radius: 20px;
+    
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(45vh, -50%);
+}
+
+#gameButtons {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    height: 10%;
+    
+    margin-top: 10%;
+
+    justify-content: center;
+    align-items: center;
+    gap: 3vw;
+}
+
+.gameButton {
+    height: 100%;
+    aspect-ratio: 1/1;
+    background-color: rgb(71, 71, 71);
+
+    border-radius: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameButton:hover {
+    background-color: rgb(51, 51, 51);
+}
+
+.gameButton > img {
+    width: 80%;
+    height: 80%;
+
+
+}
