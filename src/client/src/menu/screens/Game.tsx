@@ -7,9 +7,10 @@ import { Pieces, type Piece } from '../game/Piece';
 
 import drawImg from '../../assets/Draw.png';
 import resignImg from '../../assets/Resign.png';
-import { leave } from '../../main';
+import { textFromLang, type Lang } from '../langManager/lang';
+import { currentLang, leave, leaveFunc, setLang } from '../../main';
 
-//After castling on white black breaks idk what abt the other color crying rn breh aaaa.
+let isMenuOpen = false;
 
 let added = false;
 
@@ -138,27 +139,27 @@ function Game(){
         socket.on("drawEndscreen", async (data) => {
             setRunning(true);
             await fetchInput(
-                data.title,
-                data.message
+                textFromLang(currentLang, data.title),
+                textFromLang(currentLang, data.message)
             )
             setRunning(false);
         })
 
         socket.on("drawRequest", async () => {
             setRunning(false)
-            const reply = await fetchConfirmInput("The other side is offering a draw, accept?")
+            const reply = await fetchConfirmInput(textFromLang(currentLang, "drawRequest"))
             setRunning(true)
             if (reply === "Yes"){
                 socket.emit("drawEndscreen", {
-                    title: "Draw!",
-                    message: "By Offer"
+                    title: "drawTitle",
+                    message: "drawByOffer"
                 });
-                const userChoice = await fetchInput("Draw!", "By Offer");  
+                const userChoice = await fetchInput(textFromLang(currentLang, "drawTitle"), textFromLang(currentLang, "drawByOffer"));  
             }
         })
 
         socket.on("rematchRequest", async () => {
-            const reply = await fetchConfirmInput("Rematch request! Accept?")
+            const reply = await fetchConfirmInput(textFromLang(currentLang, "rematchRequest"))
             if (reply === "Yes"){
                 socket.emit("rematchReply", {reply: "Yes"});
                 
@@ -211,7 +212,7 @@ function Game(){
         <>
         {showPromo && (
             <div id="promotion-menu">
-                <h3>Promote Your Pawn</h3>
+                <h3>{textFromLang(currentLang, "promotionMessage")}</h3>
                 <div className="promo-options">
                     <img src={Pieces.QUEEN.imgFile} onClick={() => handleSelection(Pieces.QUEEN)}/>
                     <img src={Pieces.ROOK.imgFile} onClick={() => handleSelection(Pieces.ROOK)}/>
@@ -230,14 +231,14 @@ function Game(){
                             handleEndScreenChoice("Rematch");
                             socket.emit("rematchRequest");
                         }}>
-                        <p>Rematch</p>
+                        <p>{textFromLang(currentLang, "rematchButton")}</p>
                     </div>
                     <div className='confirmButton' onClick={() => {
                         handleEndScreenChoice("Leave");
                         leave();
                         socket.disconnect();
                     }}>
-                        <p>Leave</p>
+                        <p>{textFromLang(currentLang, "leaveButton")}</p>
                     </div>
                 </div>
             </div>
@@ -248,10 +249,10 @@ function Game(){
                 <p>{confirmMessage}</p>
                 <div id='buttons'>
                     <div className='confirmButton' onClick={() => {handleConfirmChoice("Yes"); setShowConfirmDialogue(false)}}>
-                        <p>Yes</p>
+                        <p>{textFromLang(currentLang, "yesButton")}</p>
                     </div>
                     <div className='confirmButton' onClick={() => {handleConfirmChoice("No"); setShowConfirmDialogue(false)}}>
-                        <p>No</p>
+                        <p>{textFromLang(currentLang, "noButton")}</p>
                     </div>
                 </div>
             </div>
@@ -289,3 +290,25 @@ function Game(){
 }
 
 export default Game
+
+document.addEventListener('click', (event) => {
+  const target = event.target as HTMLElement;
+  
+  if (target.id === 'selectLang') {
+    isMenuOpen = !isMenuOpen;
+    leaveFunc();
+    return;
+  }
+
+  if (target.dataset.lang) {
+    setLang(target.dataset.lang as Lang);
+    isMenuOpen = false;
+    leaveFunc();
+    return;
+  }
+
+  if (isMenuOpen) {
+    isMenuOpen = false;
+    leaveFunc();
+  }
+});

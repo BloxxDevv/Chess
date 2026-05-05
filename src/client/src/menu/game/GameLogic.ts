@@ -1,3 +1,5 @@
+import { textFromLang } from "../langManager/lang";
+import { currentLang } from "../../main";
 import {Pieces, type Piece} from "./Piece";
 import { socket } from "./ServerLogic";
 
@@ -38,6 +40,26 @@ let ccell2: HTMLDivElement;
 
 let kingCell: HTMLDivElement;
 
+export async function getFullFEN(): Promise<string>{
+    let fen = getPosString();
+
+    fen = fen + " " + ((enPassant == '') ? '-' : enPassant.toLowerCase());
+
+    fen = fen + " " + plieCounter;
+
+    const moveCount = await new Promise((resolve) => {
+        socket.emit("getMoveCount");
+        
+        socket.once("moveCountResponse", (data) => {
+            resolve(data.count);
+        });
+    });
+
+    fen = fen + " " + moveCount;
+
+    return fen;
+}
+
 export function reset(send: boolean){
     currentPiece = undefined;
     currentCloneImg = undefined;
@@ -70,20 +92,20 @@ export function reset(send: boolean){
 
 export async function resign(confirmCallback: (message: string) => Promise<string>, fetchInputCallback: (title: string, message: string) => Promise<string>){
     running = true;
-    const reply = await confirmCallback("Are you sure, you want to resign?")
+    const reply = await confirmCallback(textFromLang(currentLang, "confirmResign"))
     running = false;
     if (reply === "Yes"){
         socket.emit("drawEndscreen", {
-            title: (playerColor === "white") ? "Black won!" : "White won!",
-            message: "By Resignation"
+            title: (playerColor === "white") ? "blackWon" : "whiteWon",
+            message: "winResign"
         });
-        await fetchInputCallback((playerColor === "white") ? "Black won!" : "White won!", "By Resignation");  
+        await fetchInputCallback((playerColor === "white") ? textFromLang(currentLang, "blackWon") : textFromLang(currentLang, "whiteWon"), textFromLang(currentLang, "winResign"));  
     }
 }
 
 export async function drawRequest(confirmCallback: (message: string) => Promise<string>, fetchInputCallback: (title: string, message: string) => Promise<string>){
     running = true;
-    const reply = await confirmCallback("Are you sure, you want to offer a draw?")
+    const reply = await confirmCallback(textFromLang(currentLang, "confirmDraw"))
     running = false;
     if (reply === "Yes"){
         socket.emit("drawRequest");
@@ -332,22 +354,22 @@ export function registerWindowListeners(promoteCallback: () => Promise<Piece>, f
                     let message = ""
                     if (isCheck((playerColor === "white") ? "black" : "white", boardMap)){
                         //Checkmate
-                        const colStr = (playerColor === "white") ? "White" : "Black";
-                        title = colStr + " won!"
-                        message = "By Checkmate"
+                        const colStr = (playerColor === "white") ? textFromLang(currentLang, "whiteWon") : textFromLang(currentLang, "blackWon");
+                        title = colStr
+                        message = textFromLang(currentLang, "winCheckmate")
 
                         socket.emit("drawEndscreen", {
-                            title: title,
-                            message: message
+                            title: (playerColor === "white") ? "whiteWon" : "blackWon",
+                            message: "winCheckmate"
                         });
                     }else{
                         //Stalemate
-                        title = "Draw!"
-                        message = "By Stalemate"
+                        title = textFromLang(currentLang, "drawTitle")
+                        message = textFromLang(currentLang, "drawStalemate")
 
                         socket.emit("drawEndscreen", {
-                            title: title,
-                            message: message
+                            title: "drawTitle",
+                            message: "drawStalemate"
                         });
                     }
 
@@ -356,26 +378,26 @@ export function registerWindowListeners(promoteCallback: () => Promise<Piece>, f
 
                 if (checkInsufficientMaterial()){
                     socket.emit("drawEndscreen", {
-                        title: "Draw!",
-                        message: "By Insufficient Material"
+                        title: "drawTitle",
+                        message: "drawInsufficientMaterial"
                     });
-                    const userChoice = await fetchInputCallback("Draw!", "By Insufficient Material");
+                    const userChoice = await fetchInputCallback(textFromLang(currentLang, "drawTitle"), textFromLang(currentLang, "drawInsufficientMaterial"));
                 }
 
                 if (plieCounter >= 100) {
                     socket.emit("drawEndscreen", {
-                        title: "Draw!",
-                        message: "By 50 Move Rule"
+                        title: "drawTitle",
+                        message: "draw50Move"
                     });
-                    const userChoice = await fetchInputCallback("Draw!", "By 50 Move Rule");   
+                    const userChoice = await fetchInputCallback(textFromLang(currentLang, "drawTitle"), textFromLang(currentLang, "draw50Move"));   
                 }
 
                 if (repetition){
                     socket.emit("drawEndscreen", {
-                        title: "Draw!",
-                        message: "By Threefold Repetition"
+                        title: "drawTitle",
+                        message: "drawRepetition"
                     });
-                    const userChoice = await fetchInputCallback("Draw!", "By Threefold Repetition");   
+                    const userChoice = await fetchInputCallback(textFromLang(currentLang, "drawTitle"), textFromLang(currentLang, "drawRepetition"));   
                 }
             }
             running = false;

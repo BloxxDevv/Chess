@@ -2,6 +2,8 @@ import { Server } from "socket.io"
 import { createServer } from "http"
 import SERVER_PORT from "./env.js"
 
+let moveCounter = 1;
+
 const httpServer = createServer();
 const io = new Server(httpServer, {
     cors: {
@@ -18,11 +20,21 @@ io.on("connection", (socket) => {
 
     rollSides();
 
+    socket.on("getMoveCount", () => {
+        socket.emit("moveCountResponse", {
+            count: moveCounter
+        });
+    })
+
     socket.on("castle", (data) => {
+        if (data.initCell.charAt(1) === '8') moveCounter++;
         socket.broadcast.emit("castle", data);
     })
 
     socket.on("movePiece", (data) => {
+        console.log(data.color)
+        console.log(moveCounter)
+        if (data.color === "black") moveCounter++;
         socket.broadcast.emit("movePiece", data);
     })
 
@@ -52,6 +64,8 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log(`Player disconnected: ${socket.id}`); 
+
+        moveCounter = 1;
 
         io.emit("playerCountUpdate", {
             count: io.engine.clientsCount
